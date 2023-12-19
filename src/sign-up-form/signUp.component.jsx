@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   createAuthUserWithEmailAndPassword,
   createUserFirebase,
@@ -6,6 +6,7 @@ import {
 import FormInput from "../components/form-input/form-input.component";
 import "./signUp.style.scss";
 import Button from "../components/button/button-form.component";
+import { UserContext } from "../contexts/user.context";
 
 const defaultFormField = {
   displayName: "",
@@ -17,6 +18,8 @@ const defaultFormField = {
 const SingUpForm = () => {
   const [formField, setFormField] = useState(defaultFormField);
   const { displayName, email, password, confirmPassword } = formField;
+
+  const { setCurrentUser } = useContext(UserContext);
 
   //   console.log(formField);
 
@@ -35,6 +38,7 @@ const SingUpForm = () => {
         email,
         password
       );
+      setCurrentUser(user);
       await createUserFirebase(user, { displayName });
       resetFormField();
       //   console.log(response);

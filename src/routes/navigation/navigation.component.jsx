@@ -1,9 +1,19 @@
 import { Outlet, Link } from "react-router-dom";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { ReactComponent as FingerprintLogo } from "../../assets/fingerprint.svg";
 import "./navigation.style.scss";
+import { UserContext } from "../../contexts/user.context";
+import { singOutUser } from "../../utils/firebase/firebase.component";
 
 const Navigation = () => {
+  // console.log("render");
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  // console.log(currentUser);
+  const signOutHandler = async () => {
+    await singOutUser();
+    setCurrentUser(null);
+  };
+
   return (
     <Fragment>
       <div className="navigation">
@@ -14,9 +24,15 @@ const Navigation = () => {
           <Link className="nav-link" to="/shop">
             shop
           </Link>
-          <Link className="nav-link" to="/auth">
-            Sign In
-          </Link>
+          {currentUser ? (
+            <span className="nav-link" onClick={signOutHandler}>
+              Sign Out
+            </span>
+          ) : (
+            <Link className="nav-link" to="/auth">
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
       <Outlet />
